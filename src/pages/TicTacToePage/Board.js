@@ -8,18 +8,23 @@ import { connect } from 'react-redux';
 
 class Board extends Component {
 
-  makeYourMove (rowValue, columnValue, xo) {
-    !this.props.won && this.props.makeYourMove(rowValue, columnValue, xo);
+  constructor(props) {
+    super(props);
+    this.makeYourMove = this.makeYourMove.bind(this);
   }
 
-  getXO(rowValue, columnValue, xo) {
+  makeYourMove (rowIndex, columnIndex, xo) {
+    !this.props.won && this.props.makeYourMove(rowIndex, columnIndex, xo);
+  }
+
+  renderXO(rowIndex, columnIndex, xo) {
     if (xo === 'x') {
-      return <X key={columnValue} columnValue={columnValue} />;
+      return <X key={columnIndex} columnIndex={columnIndex} />;
     }
     if (xo === 'o') {
-      return <O key={columnValue} columnValue={columnValue} />;
+      return <O key={columnIndex} columnIndex={columnIndex} />;
     }
-    return <Y key={columnValue} makeYourMove={this.makeYourMove.bind(this, rowValue, columnValue)} turn={this.props.turn} />;
+    return <Y key={columnIndex} row={rowIndex} col={columnIndex} makeYourMove={this.makeYourMove} turn={this.props.turn} />;
   }
 
   render() {
@@ -27,12 +32,12 @@ class Board extends Component {
       <div className='board'>
         {
           Object.keys(this.props.board)
-            .map(rowValue => {
+            .map(rowIndex => {
               return (
-                <div className='row' key={rowValue}>
+                <div className='row' key={rowIndex}>
                   {
-                    this.props.board[rowValue].map((xo, columnValue) => {
-                      return this.getXO(rowValue, columnValue, xo);
+                    this.props.board[rowIndex].map((xo, columnIndex) => {
+                      return this.renderXO(rowIndex, columnIndex, xo);
                     })
                   }
                 </div>
@@ -51,14 +56,11 @@ Board.propTypes = {
   makeYourMove: PropTypes.func.isRequired
 };
 export default connect(
-  ({board, turn, won, draw}) => ({
-    board, turn, won, draw
-  }),
-  (dispatch) => {
-    return {
-      makeYourMove (rowValue, columnValue, xo) {
-        dispatch(makeYourMove(rowValue, columnValue, xo));
-      }
-    };
+  ({ tictacteo }) => {
+    const {board, turn, won, draw} = tictacteo;
+    return { board, turn, won, draw };
+  },
+  {
+    makeYourMove,
   }
 )(Board);
