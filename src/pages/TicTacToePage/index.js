@@ -3,7 +3,7 @@ import Board from './Board';
 import Result from './Result';
 import './main.css';
 
-const TicTacToe = () => {
+const TicTacToePage = () => {
   return (
     <div className="app">
       <Board />
@@ -12,4 +12,4 @@ const TicTacToe = () => {
   );
 }
 
-export default TicTacToe;
+export default TicTacToePage;
